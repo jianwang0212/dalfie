@@ -43,7 +43,7 @@ df1 = df[df['bot_id'] == 'B01NBFX8AMP']
 time_slack = df1.iloc[0]['ts']
 t2 = df1.iloc[0]['text']
 t1 = df1.iloc[1]['text']
-t = t1 + t2
+t = t1 + '\n' + t2
 df2 = pd.DataFrame([x.split(';') for x in t.split('\n')])
 df2.columns = ['c1']
 df3 = df2[df2['c1']!= "Dalfie's been trading away:"].reset_index()
