@@ -163,7 +163,9 @@ df['time_now'] = datetime.fromtimestamp(float(time_slack))
 print(datetime.fromtimestamp(float(time_slack)))
 df.set_index('time_now',inplace = True)
 tags=['name','Chain','exchange','usd_pricing','ccy1','ccy2']
-df = df.tz_localize('Asia/Shanghai')
+# df = df.tz_localize('Asia/Shanghai') 
+df = df.tz_localize('UTC') 
+
 # You can generate an API token from the "API Tokens Tab" in the UI
 token = "GrfxS5qkPdY4rSPeYDSzE3VvzRPtR9Ik4BNkmhvhJ12q-utviJtxYWdAaxSCUnzUqV3-D-_MrHiy2E0-I3bzHA=="
 org = "zi_org"
