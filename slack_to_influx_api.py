@@ -163,7 +163,9 @@ df['time_now'] = datetime.fromtimestamp(float(time_slack))
 print(datetime.fromtimestamp(float(time_slack)))
 df.set_index('time_now',inplace = True)
 tags=['name','Chain','exchange','usd_pricing','ccy1','ccy2']
-df = df.tz_localize('Asia/Shanghai')
+# df = df.tz_localize('Asia/Shanghai') 
+df = df.tz_localize('UTC') 
+
 # You can generate an API token from the "API Tokens Tab" in the UI
 token = "REDACTED_INFLUXDB_TOKEN"
 org = "zi_org"
