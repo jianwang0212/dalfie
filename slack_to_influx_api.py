@@ -127,12 +127,18 @@ df_final['bal_address'] = df_final.apply(lambda x: x['Trader'] if x['bal_in'] ==
 
 def get_bal(tokenAddress,tokenAbi, myContractAddress, chain):
     if chain == "BSC":
-        url = "https://speedy-nodes-nyc.moralis.io/REDACTED_MORALIS_API_KEY/bsc/mainnet"
+        moralis_api_key = os.environ.get("MORALIS_API_KEY")
+        if not moralis_api_key:
+            raise RuntimeError("Set MORALIS_API_KEY before reading BSC balances.")
+        url = f"https://speedy-nodes-nyc.moralis.io/{moralis_api_key}/bsc/mainnet"
     elif chain == "HECO":
         url = "https://http-mainnet.hecochain.com"
         tokenAddress = Web3.toChecksumAddress(tokenAddress)
     elif chain == "ETH":
-        url = "https://mainnet.infura.io/v3/REDACTED_INFURA_PROJECT_ID"
+        infura_project_id = os.environ.get("INFURA_PROJECT_ID")
+        if not infura_project_id:
+            raise RuntimeError("Set INFURA_PROJECT_ID before reading ETH balances.")
+        url = f"https://mainnet.infura.io/v3/{infura_project_id}"
     else:
         return 0
 
@@ -167,11 +173,15 @@ tags=['name','Chain','exchange','usd_pricing','ccy1','ccy2']
 df = df.tz_localize('UTC') 
 
 # You can generate an API token from the "API Tokens Tab" in the UI
-token = "REDACTED_INFLUXDB_TOKEN"
-org = "zi_org"
-bucket = "my-bucket"
+token = os.environ.get("INFLUXDB_TOKEN")
+org = os.environ.get("INFLUXDB_ORG", "zi_org")
+bucket = os.environ.get("INFLUXDB_BUCKET", "my-bucket")
 
-with InfluxDBClient(url="http://68.183.38.145:8086", token=token, org=org) as client:
+url = os.environ.get("INFLUXDB_URL", "http://68.183.38.145:8086")
+if not token:
+    raise SystemExit("Set INFLUXDB_TOKEN before running this script.")
+
+with InfluxDBClient(url=url, token=token, org=org) as client:
     _write_client = client.write_api(write_options=SYNCHRONOUS)
     _write_client.write(bucket, org, record=df, data_frame_measurement_name='linux_server', data_frame_tag_columns = tags)
 
